@@ -16,20 +16,36 @@ c.JupyterHub.admin_access = True
 c.Spawner.default_url = '/lab'
 
 ## Authenticator
-from jhub_cas_authenticator.cas_auth import CASAuthenticator
-c.JupyterHub.authenticator_class = CASAuthenticator
 
-# The CAS URLs to redirect (un)authenticated users to.
-c.CASAuthenticator.cas_login_url = 'https://cas.uvsq.fr/login'
-c.CASLocalAuthenticator.cas_logout_url = 'https://cas.uvsq/logout'
+c.JupyterHub.log_level = 10
+from oauthenticator.github import LocalGitHubOAuthenticator
+c.JupyterHub.authenticator_class = LocalGitHubOAuthenticator
 
-# The CAS endpoint for validating service tickets.
-c.CASAuthenticator.cas_service_validate_url = 'https://cas.uvsq.fr/serviceValidate'
+c.LocalGitHubOAuthenticator.create_system_users = True
 
-# The service URL the CAS server will redirect the browser back to on successful authentication.
-c.CASAuthenticator.cas_service_url = 'https://%s/hub/login' % os.environ['HOST']
+c.Authenticator.allowed_users = allowed_users = set()
+c.JupyterHub.admin_users = admin = set()
 
-c.Authenticator.admin_users = { 'lucadefe' }
+import os
+import sys
+
+join = os.path.join
+
+here = os.path.dirname(__file__)
+root = os.environ.get('OAUTHENTICATOR_DIR', here)
+sys.path.insert(0, root)
+
+with open(join(root, 'userlist')) as f:
+    for line in f:
+        if not line:
+            continue
+        parts = line.split()
+        name = parts[0]
+        allowed_users.add(name)
+        if len(parts) > 1 and parts[1] == 'admin':
+            admin.add(name)
+
+c.GitHubOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
 
 
 ## Docker spawner
@@ -47,7 +63,7 @@ c.DockerSpawner.volumes = { 'jupyterhub-user-{username}': notebook_dir }
 
 # Other stuff
 c.Spawner.cpu_limit = 1
-c.Spawner.mem_limit = '10G'
+c.Spawner.mem_limit = '1G'
 
 
 ## Services
