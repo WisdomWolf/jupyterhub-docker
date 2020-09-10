@@ -2,7 +2,7 @@ FROM jupyterhub/jupyterhub:1.2
 
 COPY jupyterhub_config.py .
 
-RUN apt install git -y
+RUN apt update && install git -y
 
 RUN pip install \
     dockerspawner==0.11.1 \
