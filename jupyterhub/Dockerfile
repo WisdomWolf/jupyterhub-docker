@@ -1,6 +1,7 @@
 FROM jupyterhub/jupyterhub:1.2
 
 COPY jupyterhub_config.py .
+COPY userlist /srv/jupyterhub/
 
 RUN apt update && apt install --no-install-recommends -y git
 
