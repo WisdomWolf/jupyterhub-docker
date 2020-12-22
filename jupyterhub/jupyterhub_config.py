@@ -67,10 +67,10 @@ c.Spawner.mem_limit = '1G'
 
 
 ## Services
-c.JupyterHub.services = [
-    {
-        'name': 'cull_idle',
-        'admin': True,
-        'command': 'python /srv/jupyterhub/cull_idle_servers.py --timeout=3600'.split(),
-    },
-]
+#c.JupyterHub.services = [
+#    {
+#        'name': 'cull_idle',
+#        'admin': True,
+#        'command': 'python /srv/jupyterhub/cull_idle_servers.py --timeout=3600'.split(),
+#    },
+#]
